@@ -55,7 +55,7 @@ def get_methods(data, mode=False):
 	return methods
 
 
-def de_compress_file(input_path,ossep,file_name,output_path,dict ):  
+def compress_file(input_path,ossep,file_name,output_path,dict ):  
 	global success
 
 	dict = ZstdCompressionDict(dict_data)	
@@ -72,15 +72,9 @@ def de_compress_file(input_path,ossep,file_name,output_path,dict ):
 				lead = b'\x22\x4A\x00\xEF' + int_bytes + compressed
 				of.write(lead)
 				success +=1
-				
-
-
-	
 	return lead
 	
-
-
-def de_compress_folder(inp, out, mode=False):
+def compress_folder(inp, out, mode=False):
 	inp = modifypath(inp, os.path.sep)
 	out = modifypath(out, os.path.sep)
 	for path, _, file_names in os.walk(inp):
@@ -111,7 +105,7 @@ def download_all(worlist1,worlist3,worlist4,worlist5,dict_data):
 	
 	with concurrent.futures.ThreadPoolExecutor(max_workers=64) as executor:
 		
-		executor.map(de_compress_file, worlist1,worlist3,worlist4,worlist5,dict_data)
+		executor.map(compress_file, worlist1,worlist3,worlist4,worlist5,dict_data)
 		
 
 input=r'待工作區'
@@ -119,7 +113,7 @@ output=r'Output'
 start = time.time()
 
 unpackpkg(input)
-de_compress_folder(input,output)
+compress_folder(input,output)
 with open(r'DS', 'rb') as f:
 	dict_data = f.read()
 	download_all(worlist1,worlist3,worlist4,worlist5,dict_data)	
